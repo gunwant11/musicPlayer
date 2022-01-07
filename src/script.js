@@ -13,11 +13,14 @@ const scene = new THREE.Scene()
 
 // stage
 
+
 const gui = new dat.GUI()
 
 const gltfLoader = new GLTFLoader()
 
+
 // gltfLoader.load('music1.gltf', (gltf) => {
+
 
 //     scene.add(gltf.scene);
 //     gltf.scene.scale.set(-0.122, 0.105, 0.135)
