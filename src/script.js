@@ -26,12 +26,13 @@ const blobGltfLoader = new GLTFLoader()
 var audio = document.querySelector('audio')
 
 
-const songTitles = ['sia', 'theme']
+const songTitles = ['painter', 'theme', 'castle']
 let source = null;
 
 
 
 function loadSong(i = 0) {
+
     audio.src = songTitles[i] + '.mp3'
     console.log(songTitles[i] + '.mp3')
     audio.load()
@@ -145,7 +146,30 @@ const material = new THREE.MeshStandardMaterial({
 const sphere = new THREE.Mesh(geometry, material);
 scene.add(sphere);
 
-// Size 
+// function createRandomballs(i) {
+//     var r = 0.2 * Math.random() * i
+//     console.log(r)
+//     const ballGeometry = new THREE.SphereGeometry(r, 16, 16);
+//     const ball = new THREE.Mesh(ballGeometry, material);
+//     scene.add(ball);
+//     var pos = (Math.random() * i) - 0.5
+//     console.log(pos)
+//     ball.position.set(pos, pos, pos)
+// }
+
+// const particleBall = new THREE.BufferGeometry;
+// const particleCnt = 5000;
+
+// const posArray = new Float32Array(particleCnt * 3);
+
+// for (let i = 0; i < particleCnt * 3; i++) {
+//     posArray[i] = Math.random()
+// }
+// particleBall.setAttribute('position', new THREE.BufferAttribute(posArray, 3))
+
+// const particleMesh = new THREE.Points(particleBall, material)
+// scene.add(particleMesh)
+
 
 const sizes = {
     width: window.innerWidth,
@@ -239,24 +263,37 @@ function onClick(event) {
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
     raycaster.setFromCamera(mouse, camera)
-    const intersects = raycaster.intersectObjects(scene.children[8].children)
+    const intersects = raycaster.intersectObjects(scene.children[11].children)
     console.log(scene.children)
 
     console.log(i)
     if (intersects[0].object.name == "NextBtn") {
         i++;
+        isPlaying = false
+        checkLenght()
         loadSong(i)
     }
     if (intersects[0].object.name == "PrevBtn") {
         i--;
+        isPlaying = false
+        checkLenght()
         loadSong(i)
     }
     if (intersects[0].object.name == "Cube" || intersects[0].object.name == "Cylinder") {
-        if (isPlaying) { loadSong() } else audio.pause()
+        checkLenght()
+        if (isPlaying) { loadSong(i) } else audio.pause()
         isPlaying = !isPlaying
+
     }
 
 
+}
+
+function checkLenght() {
+
+    if (i > (songTitles.length - 1)) {
+        i = 0
+    }
 }
 var mouseTolerance = 0.0002;
 
@@ -278,8 +315,8 @@ camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
 camera.position.z = 4
 scene.add(camera)
     // Controls
-const controls = new OrbitControls(camera, canvas)
-controls.enableDamping = true
+    // const controls = new OrbitControls(camera, canvas)
+    // controls.enableDamping = true
     /**
      * Renderer
      */
