@@ -13,23 +13,38 @@ body {
     top: 0;
     left: 0;
     outline: none;
+    z-index: -1;
 }
 
-.button {
-    display: flex;
-    position: absolute;
-    top: 90%;
-    left: 50%;
-}
-
-.one {
+.btn {
     background-color: coral;
-    position: relative;
-    z-index: 10;
     color: white;
     border-radius: 50%;
     width: 50px;
     height: 50px;
     border: 12px white;
+    left: 100px;
+    top: 100px;
     margin: 10px;
+    cursor: pointer;
+}
+
+#play {
+    left: 150px;
+}
+
+#next {
+    left: 200px;
+}
+
+.container {
+    position: absolute;
+    background-color: blueviolet;
+    padding: 10px;
+    display: flex;
+    width: 250px;
+    justify-content: center;
+    border-radius: 10px;
+    left: 80%;
+    top: 80%;
 }

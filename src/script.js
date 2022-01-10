@@ -71,20 +71,22 @@ let baseModel
 gltfLoader.load('base.gltf', (gltf) => {
 
     baseModel = gltf.scene
-    const baseMaterialTop = new THREE.MeshStandardMaterial({
-        color: 0x909090,
-        emissive: 0x00000,
-        roughness: 0,
-        metalness: 0
-    });
     const baseMaterial = new THREE.MeshStandardMaterial({
-        color: 0x909090,
+        color: 0x252525,
         emissive: 0x00000,
-        roughness: 0,
+        roughness: 0.5,
         metalness: 0
     });
-
-    console.log(baseModel)
+    const baseMaterial2 = new THREE.MeshStandardMaterial({
+        color: 0x333333,
+        emissive: 0x00000,
+        roughness: 0.5,
+        metalness: 0
+    });
+    baseModel.children.forEach((x) => x.material = baseMaterial)
+        // const color2 = new THREE.Color(0xff0000);
+    baseModel.children[2].material = baseMaterial2
+    console.log(baseModel.children)
 
     scene.add(gltf.scene);
     gltf.scene.scale.set(.8, .8, .8)
@@ -165,17 +167,23 @@ window.addEventListener('resize', () => {
 
 const AmbientLight = new THREE.AmbientLight(0xffffff, 0.4)
 const pointLight = new THREE.PointLight(0xffffff, 1)
-const spotLight = new THREE.SpotLight(0x0000ff, 1)
+const spotLight1 = new THREE.SpotLight(0x0000ff, 1)
+const spotLight2 = new THREE.SpotLight(0xff00ff, 1)
+const spotLight3 = new THREE.SpotLight(0x0000ff, 1)
+const spotLight4 = new THREE.SpotLight(0x0000ff, 1)
 const light = new THREE.DirectionalLight(0xffff00, 2);
 const helper = new THREE.DirectionalLightHelper(light, 1);
 scene.add(helper);
 
-spotLight.position.set(-6, 11, 9)
+spotLight1.position.set(-6, 11, 9)
+spotLight2.position.set(-6, 5, 1)
+spotLight3.position.set(6, 5, 1)
+spotLight4.position.set(-6, 11, 1)
 pointLight.position.set(6, 11, 9)
-spotLight.distance = 200
-spotLight.penumbra = 1;
-spotLight.decay = 1
-spotLight.angle = 0.5
+spotLight1.distance = 200
+spotLight1.penumbra = 1;
+spotLight1.decay = 1
+spotLight1.angle = 0.5
 light.rotation.z = Math.PI
 light.position.y = -2
 
@@ -184,7 +192,10 @@ light.position.y = -2
 // gui.add(pointLight.position, "z", 50, 90, 1)
 scene.add(light);
 scene.add(AmbientLight)
-scene.add(spotLight)
+scene.add(spotLight1)
+scene.add(spotLight2)
+scene.add(spotLight3)
+scene.add(spotLight4)
 scene.add(pointLight)
 const sphereSize = 1;
 const pointLightHelper = new THREE.PointLightHelper(pointLight, sphereSize);
@@ -247,7 +258,7 @@ function onClick(event) {
 
 
 }
-var mouseTolerance = 0.0003;
+var mouseTolerance = 0.0002;
 
 function onMouseMove(e) {
     var centerX = window.innerWidth * 0.5;
