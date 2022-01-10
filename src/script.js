@@ -335,9 +335,9 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 let distortion = 1,
     high = 1;
 
-
 const animate = (a) => {
 
+    audioCtx.resume()
     move(a, distortion, high)
         //nametexture.rotation += 0.01
 
