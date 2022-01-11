@@ -20,7 +20,7 @@ var mixer, actions, prevPosition, playPosition, nextPosition, i = 0,
 const gui = new dat.GUI()
 const loadingManager = new THREE.LoadingManager()
 const gltfLoader = new GLTFLoader()
-const blobGltfLoader = new GLTFLoader()
+
 
 
 var audio = document.querySelector('audio')
@@ -87,7 +87,6 @@ gltfLoader.load('base.gltf', (gltf) => {
     baseModel.children.forEach((x) => x.material = baseMaterial)
         // const color2 = new THREE.Color(0xff0000);
     baseModel.children[2].material = baseMaterial2
-    console.log(baseModel.children)
 
     scene.add(gltf.scene);
     gltf.scene.scale.set(.8, .8, .8)
@@ -95,15 +94,6 @@ gltfLoader.load('base.gltf', (gltf) => {
     gltf.scene.rotation.set(-0.324, -1.56, 0)
 
 
-    console.log("gltf loaded")
-})
-
-blobGltfLoader.load('blob.gltf', (gltf) => {
-
-    //scene.add(gltf.scene);
-    gltf.scene.scale.set(.4, .4, .4)
-    gltf.scene.position.set(0.08, -1.885, 0.15)
-    gltf.scene.rotation.set(-0.324, -1.56, 0)
     console.log("gltf loaded")
 })
 
@@ -126,11 +116,12 @@ loadingManager.onLoad = () => {
 }
 const textureLoader = new THREE.TextureLoader(loadingManager)
 const texture = textureLoader.load('metal12.jpg')
+const ballTexture = textureLoader.load('metal3.webp')
 
 
-// texture.wrapS = THREE.RepeatWrapping;
-// texture.wrapT = THREE.RepeatWrapping;
-// texture.repeat.set(2, 1);
+texture.wrapS = THREE.RepeatWrapping;
+texture.wrapT = THREE.RepeatWrapping;
+texture.repeat.set(2, 1);
 
 
 
@@ -149,26 +140,36 @@ scene.add(sphere);
 // function createRandomballs(i) {
 //     var r = 0.2 * Math.random() * i
 //     console.log(r)
-//     const ballGeometry = new THREE.SphereGeometry(r, 16, 16);
-//     const ball = new THREE.Mesh(ballGeometry, material);
-//     scene.add(ball);
-//     var pos = (Math.random() * i) - 0.5
-//     console.log(pos)
-//     ball.position.set(pos, pos, pos)
-// }
 
-// const particleBall = new THREE.BufferGeometry;
-// const particleCnt = 5000;
+// const ballGeometry = new THREE.BufferGeometry;
+// const ball = new THREE.Mesh(ballGeometry, material);
+// scene.add(ball);
+// var pos = (Math.random() * i) - 0.5
+// console.log(pos)
+// ball.position.set(pos, pos, pos)
 
-// const posArray = new Float32Array(particleCnt * 3);
 
-// for (let i = 0; i < particleCnt * 3; i++) {
-//     posArray[i] = Math.random()
-// }
-// particleBall.setAttribute('position', new THREE.BufferAttribute(posArray, 3))
+const particleBall = new THREE.BufferGeometry;
+const particleCnt = 500;
 
-// const particleMesh = new THREE.Points(particleBall, material)
-// scene.add(particleMesh)
+const meshMaterial = new THREE.PointsMaterial({
+    size: 0.07,
+    map: ballTexture,
+    color: 0xffffff,
+    transparent: true
+})
+
+
+
+const posArray = new Float32Array(particleCnt * 3);
+
+for (let i = 0; i < particleCnt * 3; i++) {
+    posArray[i] = (Math.random() - 0.5) * 10
+}
+particleBall.setAttribute('position', new THREE.BufferAttribute(posArray, 3))
+
+const particleMesh = new THREE.Points(particleBall, meshMaterial)
+scene.add(particleMesh)
 
 
 const sizes = {
@@ -191,18 +192,13 @@ window.addEventListener('resize', () => {
 
 const AmbientLight = new THREE.AmbientLight(0xffffff, 0.4)
 const pointLight = new THREE.PointLight(0xffffff, 1)
-const spotLight1 = new THREE.SpotLight(0x0000ff, 1)
+const spotLight1 = new THREE.SpotLight(0x0000ff, 2)
 const spotLight2 = new THREE.SpotLight(0xff00ff, 1)
-const spotLight3 = new THREE.SpotLight(0x0000ff, 1)
-const spotLight4 = new THREE.SpotLight(0x0000ff, 1)
+const spotLight3 = new THREE.SpotLight(0xff0000, 1)
 const light = new THREE.DirectionalLight(0xffff00, 2);
-const helper = new THREE.DirectionalLightHelper(light, 1);
-scene.add(helper);
-
 spotLight1.position.set(-6, 11, 9)
 spotLight2.position.set(-6, 5, 1)
 spotLight3.position.set(6, 5, 1)
-spotLight4.position.set(-6, 11, 1)
 pointLight.position.set(6, 11, 9)
 spotLight1.distance = 200
 spotLight1.penumbra = 1;
@@ -219,7 +215,7 @@ scene.add(AmbientLight)
 scene.add(spotLight1)
 scene.add(spotLight2)
 scene.add(spotLight3)
-scene.add(spotLight4)
+
 scene.add(pointLight)
 const sphereSize = 1;
 const pointLightHelper = new THREE.PointLightHelper(pointLight, sphereSize);
@@ -258,13 +254,14 @@ const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 
 
+console.log(scene.children)
+
 function onClick(event) {
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
     raycaster.setFromCamera(mouse, camera)
-    const intersects = raycaster.intersectObjects(scene.children[11].children)
-    console.log(scene.children)
+    const intersects = raycaster.intersectObjects(scene.children[10].children)
 
     console.log(i)
     if (intersects[0].object.name == "NextBtn") {
@@ -288,6 +285,7 @@ function onClick(event) {
 
 
 }
+
 
 function checkLenght() {
 
@@ -315,8 +313,8 @@ camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
 camera.position.z = 4
 scene.add(camera)
     // Controls
-    // const controls = new OrbitControls(camera, canvas)
-    // controls.enableDamping = true
+const controls = new OrbitControls(camera, canvas)
+controls.enableDamping = true
     /**
      * Renderer
      */
@@ -340,6 +338,12 @@ const animate = (a) => {
     audioCtx.resume()
     move(a, distortion, high)
         //nametexture.rotation += 0.01
+    if (audio.ended) {
+        i++;
+        isPlaying = false
+        checkLenght()
+        loadSong(i)
+    }
 
     renderer.render(scene, camera)
     window.requestAnimationFrame(animate)
