@@ -30,4 +30,12 @@ h2 {
     margin: 30px;
 }
 
+a {
+    color: inherit;
+}
+
+a:hover {
+    color: yellow;
+}
+
 /*# sourceMappingURL=main.css.map*/
