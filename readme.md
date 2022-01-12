@@ -1,4 +1,4 @@
-# Three.js Starter
+# Music Visualizer
 
 
 ## Setup
