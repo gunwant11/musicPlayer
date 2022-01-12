@@ -1,11 +1,11 @@
 import './style.css'
 import * as THREE from 'three'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import gsap from 'gsap'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
-import * as dat from 'dat.gui'
 import * as noise from './perlin'
 import { MirroredRepeatWrapping } from 'three'
+// import * as dat from 'dat.gui'
+import gsap from 'gsap'
+// import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
 
@@ -15,9 +15,10 @@ const scene = new THREE.Scene()
 // stage
 window.addEventListener('click', onClick);
 window.addEventListener('mousemove', onMouseMove);
-var mixer, actions, prevPosition, playPosition, nextPosition, i = 0,
-    center, camera;
-const gui = new dat.GUI()
+//window.addEventListener('mouseup', onHover());
+var i = 0,
+    camera;
+// const gui = new dat.GUI()
 const loadingManager = new THREE.LoadingManager()
 const gltfLoader = new GLTFLoader()
 
@@ -85,7 +86,7 @@ gltfLoader.load('base.gltf', (gltf) => {
         metalness: 0
     });
     baseModel.children.forEach((x) => x.material = baseMaterial)
-        // const color2 = new THREE.Color(0xff0000);
+
     baseModel.children[2].material = baseMaterial2
 
     scene.add(gltf.scene);
@@ -119,8 +120,8 @@ const texture = textureLoader.load('metal12.jpg')
 const ballTexture = textureLoader.load('metal3.webp')
 
 
-texture.wrapS = THREE.RepeatWrapping;
-texture.wrapT = THREE.RepeatWrapping;
+texture.wrapS = THREE.MirroredRepeatWrapping;
+texture.wrapT = THREE.MirroredRepeatWrapping;
 texture.repeat.set(2, 1);
 
 
@@ -136,17 +137,6 @@ const material = new THREE.MeshStandardMaterial({
 });
 const sphere = new THREE.Mesh(geometry, material);
 scene.add(sphere);
-
-// function createRandomballs(i) {
-//     var r = 0.2 * Math.random() * i
-//     console.log(r)
-
-// const ballGeometry = new THREE.BufferGeometry;
-// const ball = new THREE.Mesh(ballGeometry, material);
-// scene.add(ball);
-// var pos = (Math.random() * i) - 0.5
-// console.log(pos)
-// ball.position.set(pos, pos, pos)
 
 
 const particleBall = new THREE.BufferGeometry;
@@ -255,15 +245,17 @@ const mouse = new THREE.Vector2();
 
 
 console.log(scene.children)
+var intersects;
 
 function onClick(event) {
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
     raycaster.setFromCamera(mouse, camera)
-    const intersects = raycaster.intersectObjects(scene.children[10].children)
+    intersects = raycaster.intersectObjects(scene.children[10].children)
 
-    console.log(i)
+
+    console.log(intersects)
     if (intersects[0].object.name == "NextBtn") {
         i++;
         isPlaying = false
@@ -292,6 +284,9 @@ function checkLenght() {
     if (i > (songTitles.length - 1)) {
         i = 0
     }
+    if (i < 0) {
+        i = songTitles.length - 1
+    }
 }
 var mouseTolerance = 0.0002;
 
@@ -301,7 +296,12 @@ function onMouseMove(e) {
 
     camera.position.x = ((e.clientX - centerX) * mouseTolerance);
     //camera.position.y = (e.clientY - centerY) * mouseTolerance;
-    camera.position.z += (e.clientY - centerY) * mouseTolerance * 0.01;
+
+    if (camera.position.z < 4.5 && camera.position.z > 3.5) {
+
+        camera.position.z += (e.clientY - centerY) * mouseTolerance * 0.02;
+    }
+    console.log(camera.position.z)
 
 }
 
@@ -313,8 +313,8 @@ camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
 camera.position.z = 4
 scene.add(camera)
     // Controls
-const controls = new OrbitControls(camera, canvas)
-controls.enableDamping = true
+    // const controls = new OrbitControls(camera, canvas)
+    // controls.enableDamping = true
     /**
      * Renderer
      */

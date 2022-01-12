@@ -29,3 +29,11 @@ h2 {
 .container {
     margin: 30px;
 }
+
+a {
+    color: inherit;
+}
+
+a:hover {
+    color: yellow;
+}
